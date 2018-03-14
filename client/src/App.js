@@ -82,7 +82,8 @@ class App extends Component {
   componentDidMount() {
     const parsed = queryString.parse(window.location.hash);
     const accessToken = parsed.access_token;
-    console.log(accessToken);
+    if (!accessToken)
+      return;
 
     fetch('https://api.spotify.com/v1/me', {
       headers: {'Authorization': 'Bearer ' + accessToken}
