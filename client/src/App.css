@@ -1,3 +1,22 @@
 div, button {
   margin: 10px;
 }
+
+
+/*.then(() => {
+            console.log("Playlist in state", this.state.playlists);
+            this.state.playlists.forEach(playlist => {
+                    fetch(`https://api.spotify.com/v1/users/${playlist.userId}/${playlist.playlistId}/tracks`, {
+                        headers: {
+                            'Authorization': 'Bearer ' + accessToken,
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(response => response.json()).then(data => {
+                        console.log("Data from playlist callback", data);
+                        this.setState({
+                            songs: data
+                        })
+                    });
+                }
+    })*/

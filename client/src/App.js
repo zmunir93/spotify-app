@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import queryString from 'query-string';
+import Stream from 'stream';
 
 const defaultStyle = {
   color: '#fff',
@@ -94,21 +95,64 @@ class App extends Component {
         }
       }))
 
-    fetch('https://api.spotify.com/v1/me/playlists', {
-      headers: {'Authorization': 'Bearer ' + accessToken}
+
+fetch('https://api.spotify.com/v1/me/playlists', {
+        headers: {
+            'Authorization': 'Bearer ' + accessToken
+        }
     }).then(response => response.json())
     .then(data => this.setState({
-      playlists: data.items.map(item => {
-        console.log(data.items)
-        return {
-          name: item.name,
-          imageURL: item.images[0].url,
-          songs: []
-        }
-      })
-    }))
+        playlists: data.items.map(item => {
+            console.log(data.items)
+            return {
+                name: item.name,
+                imageURL: item.images[0].url,
+                songs: [],
+                playlistId: item.id,
+                userId: item.owner.id
+            }
+        })
+    })).then(() => {    
+          this.state.playlists.forEach(playlist => {
+            console.log("Fetching some playlist data")
+            fetch(`https://api.spotify.com/v1/users/${playlist.userId}/playlists/${playlist.playlistId}/tracks?fields=items&limit=5`, {
+              headers: {
+                'Authorization': 'Bearer ' + accessToken
+              }
+            }).then((res) => {
+                res.json().then((data) => {
+                this.setState({
+                  songs: data.items.map(track => track.track.id) 
+                })
+                  console.log("songs",this.state.songs)  
+                })
+              }).then(() => {
+                console.log("Playlist", this.state.playlists)
+                this.state.playlists.forEach(playlist => {
+                  console.log("This", this)
+                  var that = this
+                  fetch(`https://api.spotify.com/v1/recommendations?seed_tracks=${that.state.songs[0]}`, {
+                    headers: {
+                      'Authorization': 'Bearer ' + accessToken,
+                    }
+                  }).then((data) => data.json()
+                      .then(data => {
+                        console.log(data)
+                        
+                      }))
+                })
+              })
+          })
+      });
 
-  }
+    // const user_id = '124656115'
+    // const playlist_id = '0XN6YVirCGcQHSdwdiod0w'
+
+    // fetch('https://api.spotify.com/v1/users/124656115/playlists/0XN6YVirCGcQHSdwdiod0w/tracks', {
+    //   headers: {'Authorization': 'Bearer ' + accessToken}
+    // }).then(response => response.json())
+    // .then(data => console.log(data));
+    }
 
 
 
