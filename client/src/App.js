@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
 import queryString from 'query-string';
-import Stream from 'stream';
 
 const defaultStyle = {
   color: '#fff',
@@ -138,7 +137,7 @@ fetch('https://api.spotify.com/v1/me/playlists', {
                   }).then((data) => data.json()
                       .then(data => {
                         console.log(data)
-                        
+
                       }))
                 })
               })
